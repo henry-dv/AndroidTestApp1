@@ -2,6 +2,7 @@ package com.example.testapp1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -17,9 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_IMAGE = "TestApp1.IMAGE";
+    public static final String EXTRA_URI = "TestApp1.URI";
+    public static final int TAKE_PICTURE = 1;
+    private Uri imageUri;
 
     private static final String TAG = "MainActivity";
 
@@ -35,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 0);
+                File photo = new File(Environment.getExternalStorageDirectory(), "testpic.jpg");
+                imageUri = Uri.fromFile(photo);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, TAKE_PICTURE);
             }
         });
     }
@@ -48,9 +58,13 @@ public class MainActivity extends AppCompatActivity {
 //            Log.i(TAG, s);
 //        }
 
-        Intent intent = new Intent(this, ImageviewActivity.class);
-        intent.putExtras(data);
-        startActivity(intent);
+        switch(requestCode) {
+            case TAKE_PICTURE:
+                Intent intent = new Intent(this, ImageviewActivity.class);
+                intent.putExtras(data);
+                intent.putExtra(EXTRA_URI, imageUri);
+                startActivity(intent);
+        }
     }
 
     @Override
