@@ -26,8 +26,9 @@ public class ImageviewActivity extends AppCompatActivity {
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
 
         Intent intent = getIntent();
-        Bitmap bitmap = (Bitmap)intent.getExtras().get("data"); //setzt Bitmap auf low-res thumbnail
-        imageView.setImageBitmap(bitmap);
+        Bitmap bitmap;
+        //bitmap = (Bitmap)intent.getExtras().get("data"); //setzt Bitmap auf low-res thumbnail
+        //imageView.setImageBitmap(bitmap);
 
         Uri imageUri = intent.getParcelableExtra(MainActivity.EXTRA_URI);
         getContentResolver().notifyChange(imageUri, null);

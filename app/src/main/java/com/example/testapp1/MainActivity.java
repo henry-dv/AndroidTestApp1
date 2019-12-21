@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,9 +43,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File photo = new File(Environment.getExternalStorageDirectory(), "testpic.jpg");
-                imageUri = Uri.fromFile(photo);
+                //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                File imageFile = new File(Environment.getExternalStorageDirectory(), "/DCIM/testapp1/testpic.jpg");
+                //imageUri = Uri.fromFile(imageFile);
+                imageUri = FileProvider.getUriForFile(MainActivity.this, "com.example.testapp1.provider", imageFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(intent, TAKE_PICTURE);
             }
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         switch(requestCode) {
             case TAKE_PICTURE:
                 Intent intent = new Intent(this, ImageviewActivity.class);
-                intent.putExtras(data);
+                Log.i(TAG, imageUri.toString());
                 intent.putExtra(EXTRA_URI, imageUri);
                 startActivity(intent);
         }
